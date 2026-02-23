@@ -16,6 +16,12 @@ header_pages:
   - about.md
   - projects.md
 
+# Social links (Minima supports these)
+minima:
+  social_links:
+    - { platform: github,  user_url: "https://github.com/YOUR_GITHUB" }
+    - { platform: linkedin, user_url: "https://www.linkedin.com/in/gokulanand-iyer-588613113/" }
+
 # Clean URLs (optional but recommended)
 permalink: /:title/
 
