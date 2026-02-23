@@ -1,0 +1,29 @@
+# Site settings
+title: Gokulanand (Gokul) Iyer
+description: Engineer and math & physics enthusiast
+url: "https://gokulanand.github.io"
+baseurl: ""
+
+# Theme
+theme: minima
+
+# Minima settings
+minima:
+  skin: dark   # Enables dark mode
+
+# Navigation (top header links)
+header_pages:
+  - about.md
+  - projects.md
+
+# Clean URLs (optional but recommended)
+permalink: /:title/
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude unnecessary files from build
+exclude:
+  - README.md
+  - LICENSE
