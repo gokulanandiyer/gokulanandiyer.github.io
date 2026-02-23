@@ -20,3 +20,9 @@ body {
 
 a { color: #79c0ff; }
 a:visited { color: #a5a3ff; }
+
+
+/* DEBUG: if this loads, you'll see a thick red bar at the top */
+.site-header {
+  border-top: 12px solid red !important;
+}
