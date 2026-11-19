@@ -1,0 +1,80 @@
+name: Build and deploy site
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      JEKYLL_ENV: production
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Install ImageMagick
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
+      - name: Build Jekyll site
+        run: bundle exec jekyll build --strict_front_matter
+      - name: Check generated pages
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+
+          pages = {
+              "/": "About",
+              "/experience/": "Experience",
+              "/publications/": "Publications",
+              "/projects/": "Projects",
+              "/cv/": "CV",
+          }
+
+          class Navigation(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links = []
+
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  if tag == "a" and "nav-link" in attrs.get("class", "").split():
+                      self.links.append(attrs.get("href"))
+
+          for path, title in pages.items():
+              html = (Path("_site") / path.strip("/") / "index.html").read_text()
+              nav = Navigation()
+              nav.feed(html)
+              assert nav.links == list(pages), (title, nav.links)
+              assert 'id="light-toggle"' in html, title
+              assert 'id="search-toggle"' in html, title
+          assert Path("_site/assets/img/portrait-placeholder.svg").is_file()
+          PY
+      - uses: actions/upload-pages-artifact@v4
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
