@@ -5,7 +5,7 @@ permalink: /
 subtitle: Mechanical engineering and computational research
 profile:
   align: right
-  image: portrait-placeholder.svg
+  image: headshot.JPG
   image_circular: false
 selected_papers: false
 social: true
@@ -21,4 +21,4 @@ latest_posts:
 
 I work on turbulence simulation, real-time visualization, and computational engineering.
 
-A fuller biography and profile photograph will be added here.
+A fuller biography will be added here.
